@@ -113,3 +113,17 @@ func TestExactSearchChinese(t *testing.T) {
 	}
 	fmt.Printf("Test total:%d words\n\n", len(keywords))
 }
+
+func TestMultiMaskChinese(t *testing.T) {
+	fmt.Printf("===> Test MultiMask \n")
+	keywords, err := Read("test_keywords_chn")
+	if err != nil {
+		t.Error(err)
+	}
+	m := new(Machine)
+	m.Build(keywords)
+
+	if m.MultiMask("阿根廷不是个阿拉伯国家", '*') != "***不是个***国家" {
+		t.Error("multi mask failed")
+	}
+}

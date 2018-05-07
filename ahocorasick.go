@@ -169,3 +169,30 @@ func (m *Machine) ExactSearch(content []rune) [](*Term) {
 
 	return nil
 }
+
+func (m *Machine) MultiMask(old string, mask rune) string {
+	content := []rune(old)
+
+	state := ROOT_STATE
+	for pos, c := range content {
+	start:
+		if m.g(state, c) == FAIL_STATE {
+			state = m.f(state)
+			goto start
+		} else {
+			state = m.g(state, c)
+			if val, ok := m.output[state]; ok {
+				for _, word := range val {
+					for i := 0; i < len(word); i++ {
+						content[pos-i] = mask
+					}
+					term := new(Term)
+					term.Pos = pos - len(word) + 1
+					term.Word = word
+				}
+			}
+		}
+	}
+
+	return string(content)
+}
